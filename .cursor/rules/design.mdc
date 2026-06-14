@@ -1,0 +1,17 @@
+---
+description: Design system rules — read DESIGN.md before generating UI
+globs: ["**/*.tsx", "**/*.jsx", "**/*.css"]
+alwaysApply: false
+---
+
+# Design System
+
+Before generating or modifying any visual component, read `DESIGN.md` at the project root.
+
+Rules:
+- Use ONLY the colors defined in DESIGN.md
+- Follow the typographic scale exactly
+- Apply spacing values from the Layout Principles section
+- Follow component patterns from the Component Stylings section
+- Never violate the Do's and Don'ts section
+- When in doubt, reference DESIGN.md — do not invent new values

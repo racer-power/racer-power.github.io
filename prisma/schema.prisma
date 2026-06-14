@@ -1,0 +1,20 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model HighScore {
+  id        Int      @id @default(autoincrement())
+  player    String
+  score     Int
+  lines     Int      @default(0)
+  level     Int      @default(1)
+  createdAt DateTime @default(now())
+}

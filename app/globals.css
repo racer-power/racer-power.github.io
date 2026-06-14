@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+:root {
+  --color-canvas: #7a8aba;
+  --color-carbon: #21242e;
+  --color-primary: #e60012;
+  --color-signal: #f68d1f;
+  --color-surface: #ffffff;
+  --color-platinum: #dedede;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-carbon);
+  font-family: Arial, Helvetica, sans-serif;
+}
