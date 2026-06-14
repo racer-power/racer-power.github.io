@@ -1,26 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { saveHighScore } from "@/app/actions/scores";
 import { GameBoard, MiniBoard } from "@/components/tetris/GameBoard";
+import { getTopScores, saveHighScore } from "@/lib/scores";
 import {
   createInitialState,
   gameReducer,
   getDropIntervalMs,
 } from "@/lib/tetris/engine";
 import type { GameStatus } from "@/lib/tetris/types";
-
-export interface TopScoreEntry {
-  id: number;
-  player: string;
-  score: number;
-  lines: number;
-  level: number;
-}
-
-interface TetrisGameProps {
-  topScores: TopScoreEntry[];
-}
 
 function statusLabel(status: GameStatus): string {
   switch (status) {
@@ -35,13 +23,17 @@ function statusLabel(status: GameStatus): string {
   }
 }
 
-export function TetrisGame({ topScores: initialTopScores }: TetrisGameProps) {
+export function TetrisGame() {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialState);
   const [playerName, setPlayerName] = useState("Player");
-  const [topScores, setTopScores] = useState(initialTopScores);
+  const [topScores, setTopScores] = useState<ReturnType<typeof getTopScores>>([]);
   const [saved, setSaved] = useState(false);
   const lastTick = useRef(0);
   const savedRef = useRef(false);
+
+  useEffect(() => {
+    setTopScores(getTopScores(5));
+  }, []);
 
   const handleStart = useCallback(() => {
     savedRef.current = false;
@@ -49,30 +41,18 @@ export function TetrisGame({ topScores: initialTopScores }: TetrisGameProps) {
     dispatch({ type: "start" });
   }, []);
 
-  const handleSaveScore = useCallback(async () => {
+  const handleSaveScore = useCallback(() => {
     if (savedRef.current || state.status !== "gameover") return;
 
     savedRef.current = true;
-    await saveHighScore({
+    const next = saveHighScore({
       player: playerName,
       score: state.score,
       lines: state.lines,
       level: state.level,
     });
     setSaved(true);
-    setTopScores((prev) => {
-      const next = [
-        ...prev,
-        {
-          id: Date.now(),
-          player: playerName.trim() || "Player",
-          score: state.score,
-          lines: state.lines,
-          level: state.level,
-        },
-      ];
-      return next.sort((a, b) => b.score - a.score).slice(0, 5);
-    });
+    setTopScores(next);
   }, [playerName, state.level, state.lines, state.score, state.status]);
 
   useEffect(() => {
